@@ -28,7 +28,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			RegisterForm registerForm;
 			registerForm.ShowDialog();
 		}
-		if (login.authorized == 1)  
+		else if (login.authorized == 1)  
 		{
 			// show a custom form
 			WorkPage wp(login.db_conn);
@@ -37,10 +37,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		else
 		{
+			continueLoop = false;
+		}
+		/*else
+		{
 			MessageBox::Show("Authentification Canceled",
 				"MainForm.cpp", MessageBoxButtons::OK);
 			continueLoop = false;
-		}
+		}*/
 	}
  
 	return 0;

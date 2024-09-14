@@ -1,5 +1,7 @@
 #pragma once
 
+#include <regex>
+
 #include <msclr/marshal_cppstd.h>
 
 #include "User.h"
@@ -53,7 +55,7 @@ namespace ApplicationanddatasecurityLR1 {
 	private: System::Windows::Forms::TextBox^ tbEmail;
 
 	private: System::Windows::Forms::Label^ label4;
-	private: System::Windows::Forms::TextBox^ tbPhone;
+
 
 	private: System::Windows::Forms::Label^ label5;
 	private: System::Windows::Forms::TextBox^ tbAddress;
@@ -65,6 +67,8 @@ namespace ApplicationanddatasecurityLR1 {
 	private: System::Windows::Forms::TextBox^ tbConfPassword;
 	private: System::Windows::Forms::Button^ bntOK;
 	private: System::Windows::Forms::Button^ btnCancel;
+	private: System::Windows::Forms::MaskedTextBox^ tbPhone;
+
 
 	private:
 		/// <summary>
@@ -85,7 +89,6 @@ namespace ApplicationanddatasecurityLR1 {
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->tbEmail = (gcnew System::Windows::Forms::TextBox());
 			this->label4 = (gcnew System::Windows::Forms::Label());
-			this->tbPhone = (gcnew System::Windows::Forms::TextBox());
 			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->tbAddress = (gcnew System::Windows::Forms::TextBox());
 			this->label6 = (gcnew System::Windows::Forms::Label());
@@ -94,6 +97,7 @@ namespace ApplicationanddatasecurityLR1 {
 			this->tbConfPassword = (gcnew System::Windows::Forms::TextBox());
 			this->bntOK = (gcnew System::Windows::Forms::Button());
 			this->btnCancel = (gcnew System::Windows::Forms::Button());
+			this->tbPhone = (gcnew System::Windows::Forms::MaskedTextBox());
 			this->SuspendLayout();
 			// 
 			// label1
@@ -123,6 +127,7 @@ namespace ApplicationanddatasecurityLR1 {
 			this->tbName->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->tbName->Location = System::Drawing::Point(265, 89);
+			this->tbName->MaxLength = 30;
 			this->tbName->Name = L"tbName";
 			this->tbName->Size = System::Drawing::Size(374, 35);
 			this->tbName->TabIndex = 2;
@@ -143,6 +148,7 @@ namespace ApplicationanddatasecurityLR1 {
 			this->tbEmail->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->tbEmail->Location = System::Drawing::Point(265, 130);
+			this->tbEmail->MaxLength = 30;
 			this->tbEmail->Name = L"tbEmail";
 			this->tbEmail->Size = System::Drawing::Size(374, 35);
 			this->tbEmail->TabIndex = 2;
@@ -157,15 +163,6 @@ namespace ApplicationanddatasecurityLR1 {
 			this->label4->Size = System::Drawing::Size(83, 29);
 			this->label4->TabIndex = 1;
 			this->label4->Text = L"Phone";
-			// 
-			// tbPhone
-			// 
-			this->tbPhone->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->tbPhone->Location = System::Drawing::Point(265, 171);
-			this->tbPhone->Name = L"tbPhone";
-			this->tbPhone->Size = System::Drawing::Size(374, 35);
-			this->tbPhone->TabIndex = 2;
 			// 
 			// label5
 			// 
@@ -183,6 +180,7 @@ namespace ApplicationanddatasecurityLR1 {
 			this->tbAddress->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->tbAddress->Location = System::Drawing::Point(265, 212);
+			this->tbAddress->MaxLength = 30;
 			this->tbAddress->Name = L"tbAddress";
 			this->tbAddress->Size = System::Drawing::Size(374, 35);
 			this->tbAddress->TabIndex = 2;
@@ -203,6 +201,7 @@ namespace ApplicationanddatasecurityLR1 {
 			this->tbPassword->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->tbPassword->Location = System::Drawing::Point(265, 253);
+			this->tbPassword->MaxLength = 30;
 			this->tbPassword->Name = L"tbPassword";
 			this->tbPassword->Size = System::Drawing::Size(374, 35);
 			this->tbPassword->TabIndex = 2;
@@ -223,6 +222,7 @@ namespace ApplicationanddatasecurityLR1 {
 			this->tbConfPassword->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->tbConfPassword->Location = System::Drawing::Point(265, 294);
+			this->tbConfPassword->MaxLength = 30;
 			this->tbConfPassword->Name = L"tbConfPassword";
 			this->tbConfPassword->Size = System::Drawing::Size(374, 35);
 			this->tbConfPassword->TabIndex = 2;
@@ -247,11 +247,22 @@ namespace ApplicationanddatasecurityLR1 {
 			this->btnCancel->UseVisualStyleBackColor = true;
 			this->btnCancel->Click += gcnew System::EventHandler(this, &RegisterForm::btnCancel_Click);
 			// 
+			// tbPhone
+			// 
+			this->tbPhone->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->tbPhone->Location = System::Drawing::Point(265, 171);
+			this->tbPhone->Mask = L"+38-000-000-0000";
+			this->tbPhone->Name = L"tbPhone";
+			this->tbPhone->Size = System::Drawing::Size(374, 35);
+			this->tbPhone->TabIndex = 5;
+			// 
 			// RegisterForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(12, 25);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(651, 404);
+			this->Controls->Add(this->tbPhone);
 			this->Controls->Add(this->btnCancel);
 			this->Controls->Add(this->bntOK);
 			this->Controls->Add(this->tbConfPassword);
@@ -260,7 +271,6 @@ namespace ApplicationanddatasecurityLR1 {
 			this->Controls->Add(this->label6);
 			this->Controls->Add(this->tbAddress);
 			this->Controls->Add(this->label5);
-			this->Controls->Add(this->tbPhone);
 			this->Controls->Add(this->label4);
 			this->Controls->Add(this->tbEmail);
 			this->Controls->Add(this->label3);
@@ -288,7 +298,24 @@ namespace ApplicationanddatasecurityLR1 {
 	{
 		return msclr::interop::marshal_as<std::string>(str);
 	}
+	
+	// Regular expression for password verification
+	bool isValidPassword(const std::string& password)
+	{
+		// (?=.*[a-z]) - at least one lowercase letter
+		// (?=.*[A-Z]) - at least one capital letter
+		// (?=.*\\d) - at least one digit
+		// (?=.*[!@#$%^&*]) - at least one special character
+		// .{12,} - minimum of 12 characters
+		std::regex password_regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{12,}$");
 
+		if (std::regex_match(password, password_regex)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 	private: System::Void bntOK_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
 		// set the user data
@@ -323,37 +350,46 @@ namespace ApplicationanddatasecurityLR1 {
 		 
 		string cnvrt_password = ToStdString(password);
 
-		// generate a 16-bit salt for the password
-		logData->salt = MakeHash::generate_salt(16); // 16 byte
-		string generate_salt = ToStdString(logData->salt->ToString());
-
-		// get a hashed password
-		logData->hash = MakeHash::hash_password(cnvrt_password, generate_salt);
-		
-		try
+		// Check if the password matches the regular expression
+		if (!isValidPassword(cnvrt_password))
 		{
-			// connect to the database
-			ManagementDB^ db_conn = gcnew ManagementDB();
+			MessageBox::Show("The password must contain at least: one uppercase and lowercase letter one digit and one special character",
+				"Error", MessageBoxButtons::OK);
+		}
+		else
+		{
+			// generate a 16-bit salt for the password
+			logData->salt = MakeHash::generate_salt(16); // 16 byte
+			string generate_salt = ToStdString(logData->salt->ToString());
 
-			// create a new user in the database
-			if (!db_conn->CreateNewUser(userData, logData))
+			// get a hashed password
+			logData->hash = MakeHash::hash_password(cnvrt_password, generate_salt);
+
+			try
 			{
-				tbEmail->Focus();
+				// connect to the database
+				ManagementDB^ db_conn = gcnew ManagementDB();
 
-				MessageBox::Show("Email name is already in use, try another one",
-					"Error", MessageBoxButtons::OK);
+				// create a new user in the database
+				if (!db_conn->CreateNewUser(userData, logData))
+				{
+					tbEmail->Focus();
+
+					MessageBox::Show("Email name is already in use, try another one",
+						"Error", MessageBoxButtons::OK);
+				}
+				else
+				{
+					this->Close();
+				}
 			}
-			else
+			catch (Exception^)
 			{
-				this->Close();
+				MessageBox::Show("Database request execution error",
+					"Error DB", MessageBoxButtons::OK);
+				Application::Exit();
 			}
 		}
-		catch (Exception^ )
-		{
-			MessageBox::Show("Database request execution error",
-				"Error DB", MessageBoxButtons::OK);
-			Application::Exit();
-		}	 
 	}
 };
 }

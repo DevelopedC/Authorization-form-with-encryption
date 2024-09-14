@@ -198,6 +198,7 @@ namespace ApplicationanddatasecurityLR1 {
 
 	public: ManagementDB^ db_conn = nullptr;
 	public: bool authorized = 0;
+	public: int numbOfAttempts = 1;
 	private: System::Void Sign_in_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
 		String^ email = this->email->Text;
@@ -232,14 +233,34 @@ namespace ApplicationanddatasecurityLR1 {
 				}
 				else
 				{
-					MessageBox::Show("Email or password is incorrect",
-						"Email or Password Empty", MessageBoxButtons::OK);
+					if (numbOfAttempts++ > 4)
+					{
+						MessageBox::Show("More than 5 failed login attempts have been completed, try again later",
+							"Large number of requests", MessageBoxButtons::OK);
+
+						this->Close();
+					}
+					else
+					{
+						MessageBox::Show("Email or password is incorrect",
+							"Email or Password Empty ", MessageBoxButtons::OK);
+					}
 				}
 			}
 			else
 			{
-				MessageBox::Show("Email or password is incorrect",
-					"Email or Password Empty", MessageBoxButtons::OK);
+				if (numbOfAttempts++ > 4)
+				{
+					MessageBox::Show("More than 5 failed login attempts have been completed, try again later",
+						"Large number of requests", MessageBoxButtons::OK);
+
+					this->Close();
+				}
+				else
+				{
+					MessageBox::Show("Email or password is incorrect",
+						"Email or Password Empty", MessageBoxButtons::OK);
+				}
 			}
 		}
 		catch (Exception^ )
