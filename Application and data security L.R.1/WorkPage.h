@@ -1,6 +1,4 @@
 #pragma once
-#include "User.h"
-#include "ManagementDB.h"
 
 namespace ApplicationanddatasecurityLR1 {
 
@@ -10,31 +8,21 @@ namespace ApplicationanddatasecurityLR1 {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::IO;
 
 	/// <summary>
 	/// —‚Ó‰Í‡ ‰Îˇ WorkPage
 	/// </summary>
 	public ref class WorkPage : public System::Windows::Forms::Form
 	{
-		ManagementDB^ user_conn;
-
 	public:
-		WorkPage(ManagementDB^ user_db)
+		bool demoVersionVariant;
+
+		WorkPage(bool dVersionV) : demoVersionVariant(dVersionV)
 		{
 			InitializeComponent();
-			 
-			user_conn = user_db;
 
-			ShowData();
-		}
-
-		// get and show user data
-		void ShowData()
-		{
-			UserData^ usrData = user_conn->GetUserInfo();
-
-			lbUserInfo->Text = "ID: " + usrData->id + "\n\nName: " 
-				+ usrData->name + "\n\naddres: " + usrData->addres;
+			this->CenterToScreen();
 		}
 
 	protected:
@@ -48,10 +36,14 @@ namespace ApplicationanddatasecurityLR1 {
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::Label^ label1;
-	private: System::Windows::Forms::Label^ lbUserInfo;
-	private: System::Windows::Forms::PictureBox^ pictureBox1;
-	private: System::Windows::Forms::Panel^ panel1;
+		  
+	private: System::Windows::Forms::MenuStrip^ menuStrip1;
+	private: System::Windows::Forms::ToolStripMenuItem^ ‚≥‰ÍËÚËToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ ÒÚ‚ÓËÚË‘‡ÈÎToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ ‚≥‰ÍËÚËToolStripMenuItem1;
+	private: System::Windows::Forms::ToolStripMenuItem^ Á·ÂÂ„ÚËToolStripMenuItem;
+	private: System::Windows::Forms::TextBox^ textBox1;
+	private: System::Windows::Forms::OpenFileDialog^ openFileDialog1;
  
 	protected:
 		 
@@ -68,72 +60,177 @@ namespace ApplicationanddatasecurityLR1 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(WorkPage::typeid));
-			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->lbUserInfo = (gcnew System::Windows::Forms::Label());
-			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
-			this->panel1 = (gcnew System::Windows::Forms::Panel());
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
-			this->panel1->SuspendLayout();
+			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
+			this->‚≥‰ÍËÚËToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->ÒÚ‚ÓËÚË‘‡ÈÎToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->‚≥‰ÍËÚËToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->Á·ÂÂ„ÚËToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
-			// label1
+			// menuStrip1
 			// 
-			this->label1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
-				| System::Windows::Forms::AnchorStyles::Right));
-			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->‚≥‰ÍËÚËToolStripMenuItem });
+			this->menuStrip1->Location = System::Drawing::Point(0, 0);
+			this->menuStrip1->Name = L"menuStrip1";
+			this->menuStrip1->Size = System::Drawing::Size(1048, 24);
+			this->menuStrip1->TabIndex = 4;
+			this->menuStrip1->Text = L"menuStrip1";
+			// 
+			// ‚≥‰ÍËÚËToolStripMenuItem
+			// 
+			this->‚≥‰ÍËÚËToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+				this->ÒÚ‚ÓËÚË‘‡ÈÎToolStripMenuItem,
+					this->‚≥‰ÍËÚËToolStripMenuItem1, this->Á·ÂÂ„ÚËToolStripMenuItem
+			});
+			this->‚≥‰ÍËÚËToolStripMenuItem->Name = L"‚≥‰ÍËÚËToolStripMenuItem";
+			this->‚≥‰ÍËÚËToolStripMenuItem->Size = System::Drawing::Size(48, 20);
+			this->‚≥‰ÍËÚËToolStripMenuItem->Text = L"‘‡ÈÎ";
+			// 
+			// ÒÚ‚ÓËÚË‘‡ÈÎToolStripMenuItem
+			// 
+			this->ÒÚ‚ÓËÚË‘‡ÈÎToolStripMenuItem->Name = L"ÒÚ‚ÓËÚË‘‡ÈÎToolStripMenuItem";
+			this->ÒÚ‚ÓËÚË‘‡ÈÎToolStripMenuItem->Size = System::Drawing::Size(126, 22);
+			this->ÒÚ‚ÓËÚË‘‡ÈÎToolStripMenuItem->Text = L"—Ú‚ÓËÚË";
+			this->ÒÚ‚ÓËÚË‘‡ÈÎToolStripMenuItem->Click += gcnew System::EventHandler(this, &WorkPage::ÒÚ‚ÓËÚË‘‡ÈÎToolStripMenuItem_Click);
+			// 
+			// ‚≥‰ÍËÚËToolStripMenuItem1
+			// 
+			this->‚≥‰ÍËÚËToolStripMenuItem1->Name = L"‚≥‰ÍËÚËToolStripMenuItem1";
+			this->‚≥‰ÍËÚËToolStripMenuItem1->Size = System::Drawing::Size(126, 22);
+			this->‚≥‰ÍËÚËToolStripMenuItem1->Text = L"¬≥‰ÍËÚË";
+			this->‚≥‰ÍËÚËToolStripMenuItem1->Click += gcnew System::EventHandler(this, &WorkPage::‚≥‰ÍËÚËToolStripMenuItem1_Click);
+			// 
+			// Á·ÂÂ„ÚËToolStripMenuItem
+			// 
+			this->Á·ÂÂ„ÚËToolStripMenuItem->Name = L"Á·ÂÂ„ÚËToolStripMenuItem";
+			this->Á·ÂÂ„ÚËToolStripMenuItem->Size = System::Drawing::Size(126, 22);
+			this->Á·ÂÂ„ÚËToolStripMenuItem->Text = L"«·ÂÂ„ÚË";
+			this->Á·ÂÂ„ÚËToolStripMenuItem->Click += gcnew System::EventHandler(this, &WorkPage::Á·ÂÂ„ÚËToolStripMenuItem_Click);
+			// 
+			// textBox1
+			// 
+			this->textBox1->BackColor = System::Drawing::SystemColors::ControlLight;
+			this->textBox1->Font = (gcnew System::Drawing::Font(L"Cascadia Mono", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label1->Location = System::Drawing::Point(12, 9);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(1118, 60);
-			this->label1->TabIndex = 0;
-			this->label1->Text = L"Welcome to Dashboard";
-			this->label1->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
+			this->textBox1->Location = System::Drawing::Point(12, 27);
+			this->textBox1->Multiline = true;
+			this->textBox1->Name = L"textBox1";
+			this->textBox1->ReadOnly = true;
+			this->textBox1->Size = System::Drawing::Size(1024, 628);
+			this->textBox1->TabIndex = 3;
 			// 
-			// lbUserInfo
+			// openFileDialog1
 			// 
-			this->lbUserInfo->AutoSize = true;
-			this->lbUserInfo->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->lbUserInfo->Location = System::Drawing::Point(283, 30);
-			this->lbUserInfo->Name = L"lbUserInfo";
-			this->lbUserInfo->Size = System::Drawing::Size(0, 31);
-			this->lbUserInfo->TabIndex = 1;
-			// 
-			// pictureBox1
-			// 
-			this->pictureBox1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.BackgroundImage")));
-			this->pictureBox1->Location = System::Drawing::Point(18, 51);
-			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(239, 255);
-			this->pictureBox1->TabIndex = 2;
-			this->pictureBox1->TabStop = false;
-			// 
-			// panel1
-			// 
-			this->panel1->BackColor = System::Drawing::SystemColors::ControlLight;
-			this->panel1->Controls->Add(this->lbUserInfo);
-			this->panel1->Controls->Add(this->pictureBox1);
-			this->panel1->Location = System::Drawing::Point(14, 84);
-			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(1116, 361);
-			this->panel1->TabIndex = 3;
+			this->openFileDialog1->FileName = L"openFileDialog1";
 			// 
 			// WorkPage
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1142, 560);
-			this->Controls->Add(this->panel1);
-			this->Controls->Add(this->label1);
+			this->ClientSize = System::Drawing::Size(1048, 667);
+			this->Controls->Add(this->textBox1);
+			this->Controls->Add(this->menuStrip1);
 			this->Name = L"WorkPage";
 			this->Text = L"WorkPage";
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
-			this->panel1->ResumeLayout(false);
-			this->panel1->PerformLayout();
+			this->menuStrip1->ResumeLayout(false);
+			this->menuStrip1->PerformLayout();
 			this->ResumeLayout(false);
+			this->PerformLayout();
 
 		}
 #pragma endregion
-	};
+
+	private: String^ FileName = "";
+	private: System::Void ÒÚ‚ÓËÚË‘‡ÈÎToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+		// Open the dialog to select where to save the new file
+		SaveFileDialog^ saveFileDialog1 = gcnew SaveFileDialog();
+		saveFileDialog1->Filter = "Text Files|*.txt|All Files|*.*";
+
+		if (saveFileDialog1->ShowDialog() == Windows::Forms::DialogResult::OK)
+		{
+			try
+			{
+				// unlock the input form
+				textBox1->ReadOnly = false;
+
+				// clean the form
+				textBox1->Text = "";
+
+				// write the file path
+				FileName = saveFileDialog1->FileName;
+				MessageBox::Show("File has been created and is open for writing", "OK", MessageBoxButtons::OK);
+			}
+			catch (Exception^ ex)
+			{
+				MessageBox::Show("Failed to create a file", "Error", MessageBoxButtons::OK);
+			}
+		}
+	}
+
+	private: System::Void ‚≥‰ÍËÚËToolStripMenuItem1_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+		if (openFileDialog1->ShowDialog() == Windows::Forms::DialogResult::OK)
+		{
+			// write the file path
+			FileName = openFileDialog1->FileName;
+
+			try
+			{
+				// unlock the input form
+				textBox1->ReadOnly = false;
+
+				// open a file for recording
+				StreamReader^ file_r = File::OpenText(FileName);
+
+				// read data from a file
+				textBox1->Text = file_r->ReadToEnd();
+
+				file_r->Close();
+
+				MessageBox::Show("File is open for writing", "OK", MessageBoxButtons::OK);
+			}
+			catch (Exception^ e)
+			{
+				MessageBox::Show("File was not opened", "Error", MessageBoxButtons::OK);
+			}
+		}
+	}
+	
+	private: System::Void Á·ÂÂ„ÚËToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+		if (!demoVersionVariant)
+		{
+			if (!String::IsNullOrEmpty(FileName))
+			{
+				try
+				{
+					// Open file for recording
+					StreamWriter^ file_w = gcnew StreamWriter(FileName);
+					// Write text from the TextBox to a file
+					file_w->Write(textBox1->Text);
+
+					file_w->Close();
+
+					MessageBox::Show("File has been saved", "OK", MessageBoxButtons::OK);
+				}
+				catch (Exception^ ex)
+				{
+					MessageBox::Show("Error saving file", "Error", MessageBoxButtons::OK);
+				}
+			}
+			else
+			{
+				MessageBox::Show("The file to save was not found", "Error", MessageBoxButtons::OK);
+			}
+		}
+		else
+		{
+			MessageBox::Show("Please register to receive the full version", "Demo version", MessageBoxButtons::OK);
+		}
+	}
+};
 }

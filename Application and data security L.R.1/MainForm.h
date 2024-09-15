@@ -55,6 +55,7 @@ namespace ApplicationanddatasecurityLR1 {
 	private: System::Windows::Forms::Panel^ panel1;
 	private: System::Windows::Forms::Button^ Sign_in;
 	private: System::Windows::Forms::LinkLabel^ registration;
+	private: System::Windows::Forms::LinkLabel^ linkLabel1;
 
  
 	private:
@@ -78,6 +79,7 @@ namespace ApplicationanddatasecurityLR1 {
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
 			this->registration = (gcnew System::Windows::Forms::LinkLabel());
 			this->Sign_in = (gcnew System::Windows::Forms::Button());
+			this->linkLabel1 = (gcnew System::Windows::Forms::LinkLabel());
 			this->panel1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -135,6 +137,7 @@ namespace ApplicationanddatasecurityLR1 {
 			// panel1
 			// 
 			this->panel1->BackColor = System::Drawing::SystemColors::ActiveCaption;
+			this->panel1->Controls->Add(this->linkLabel1);
 			this->panel1->Controls->Add(this->registration);
 			this->panel1->Controls->Add(this->Sign_in);
 			this->panel1->Controls->Add(this->password);
@@ -153,6 +156,7 @@ namespace ApplicationanddatasecurityLR1 {
 			this->registration->AutoSize = true;
 			this->registration->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
+			this->registration->LinkColor = System::Drawing::Color::Red;
 			this->registration->Location = System::Drawing::Point(215, 187);
 			this->registration->Name = L"registration";
 			this->registration->Size = System::Drawing::Size(101, 24);
@@ -173,6 +177,18 @@ namespace ApplicationanddatasecurityLR1 {
 			this->Sign_in->Text = L"Sign in";
 			this->Sign_in->UseVisualStyleBackColor = false;
 			this->Sign_in->Click += gcnew System::EventHandler(this, &MainForm::Sign_in_Click);
+			// 
+			// linkLabel1
+			// 
+			this->linkLabel1->AutoSize = true;
+			this->linkLabel1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F));
+			this->linkLabel1->Location = System::Drawing::Point(86, 187);
+			this->linkLabel1->Name = L"linkLabel1";
+			this->linkLabel1->Size = System::Drawing::Size(125, 24);
+			this->linkLabel1->TabIndex = 7;
+			this->linkLabel1->TabStop = true;
+			this->linkLabel1->Text = L"demo version";
+			this->linkLabel1->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &MainForm::linkLabel1_LinkClicked);
 			// 
 			// MainForm
 			// 
@@ -275,6 +291,14 @@ namespace ApplicationanddatasecurityLR1 {
 	private: System::Void registration_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e) 
 	{
 		this->switchToRegister = true;
+		this->Close();
+	}
+
+	// demo version variant
+	public: bool demoVersionVariant = false;
+	private: System::Void linkLabel1_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
+	{
+		this->demoVersionVariant = true;
 		this->Close();
 	}
 };
