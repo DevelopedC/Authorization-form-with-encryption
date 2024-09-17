@@ -29,9 +29,6 @@ namespace ApplicationanddatasecurityLR1 {
 		RegisterForm(void)
 		{
 			InitializeComponent();
-			//
-			//TODO: добавьте код конструктора
-			//
 			this->CenterToScreen();
 		}
 
@@ -353,42 +350,42 @@ namespace ApplicationanddatasecurityLR1 {
 		// Check if the password matches the regular expression
 		if (!isValidPassword(cnvrt_password))
 		{
-			MessageBox::Show("The password must contain at least: one uppercase and lowercase letter one digit and one special character",
-				"Error", MessageBoxButtons::OK);
-		}
-		else
+			MessageBox::Show("The password must contain at least: one uppercase and lowercase" +
+			" letter one digit and one special character", "Error", MessageBoxButtons::OK);
+			return;
+		} 
+			
+		// generate a 16-bit salt for the password
+		logData->salt = MakeHash::generate_salt(16); // 16 byte
+		string generate_salt = ToStdString(logData->salt->ToString());
+
+		// get a hashed password
+		logData->hash = MakeHash::hash_password(cnvrt_password, generate_salt);
+
+		try
 		{
-			// generate a 16-bit salt for the password
-			logData->salt = MakeHash::generate_salt(16); // 16 byte
-			string generate_salt = ToStdString(logData->salt->ToString());
+			// connect to the database
+			ManagementDB^ db_conn = gcnew ManagementDB();
 
-			// get a hashed password
-			logData->hash = MakeHash::hash_password(cnvrt_password, generate_salt);
-
-			try
+			// create a new user in the database
+			if (!db_conn->CreateNewUser(userData, logData))
 			{
-				// connect to the database
-				ManagementDB^ db_conn = gcnew ManagementDB();
+				tbEmail->Focus();
 
-				// create a new user in the database
-				if (!db_conn->CreateNewUser(userData, logData))
-				{
-					tbEmail->Focus();
-
-					MessageBox::Show("Email name is already in use, try another one",
-						"Error", MessageBoxButtons::OK);
-				}
-				else
-				{
-					this->Close();
-				}
+				MessageBox::Show("Email name is already in use, try another one",
+					"Error", MessageBoxButtons::OK);
+				return;
 			}
-			catch (Exception^)
+			else
 			{
-				MessageBox::Show("Database request execution error",
-					"Error DB", MessageBoxButtons::OK);
-				Application::Exit();
+				this->Close();
 			}
+		}
+		catch (Exception^)
+		{
+			MessageBox::Show("Database request execution error",
+				"Error DB", MessageBoxButtons::OK);
+			Application::Exit();
 		}
 	}
 };

@@ -28,9 +28,6 @@ namespace ApplicationanddatasecurityLR1 {
 		MainForm(void)
 		{
 			InitializeComponent();
-			//
-			//TODO: добавьте код конструктора
-			//
 			this->CenterToScreen();
 		}
 
@@ -212,9 +209,40 @@ namespace ApplicationanddatasecurityLR1 {
 		return msclr::interop::marshal_as<std::string>(str);
 	}
 
+	private: void HandleFailedAttempt(ManagementDB^ db_conn)
+	{
+		if (++numbOfAttempts > 4)
+		{
+			ShowMessageAndClose("More than 5 failed login attempts have been completed, try again later", "Large number of requests");
+			db_conn->BlockUser();
+		}
+		else
+		{
+			ShowMessage("Email or password is incorrect", "Email or Password Empty");
+		}
+	}
+
+	private: void ShowMessage(String^ message, String^ title)
+	{
+		MessageBox::Show(message, title, MessageBoxButtons::OK);
+	}
+
+	private: void ShowMessageAndClose(String^ message, String^ title)
+	{
+		ShowMessage(message, title);
+		this->Close();
+	}
+
+	private: void ShowMessageAndExit(String^ message, String^ title)
+	{
+		ShowMessage(message, title);
+		Application::Exit();
+	}
+
 	public: ManagementDB^ db_conn = nullptr;
 	public: bool authorized = 0;
 	public: int numbOfAttempts = 1;
+
 	private: System::Void Sign_in_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
 		String^ email = this->email->Text;
@@ -231,10 +259,16 @@ namespace ApplicationanddatasecurityLR1 {
 		try
 		{
 			// connect to the database
-			db_conn = gcnew ManagementDB(email);
+			ManagementDB^ db_conn = gcnew ManagementDB(email);
 			
 			if (db_conn->GetHashSalt())
 			{
+				if (db_conn->SelectBlockUser())
+				{
+					ShowMessageAndClose("Your account is blocked, try again later", "Email");
+					return;
+				}
+
 				string SaltDB = ToStdString(db_conn->getSalt());
 				string StrConvPass = ToStdString(password);
 
@@ -249,40 +283,17 @@ namespace ApplicationanddatasecurityLR1 {
 				}
 				else
 				{
-					if (numbOfAttempts++ > 4)
-					{
-						MessageBox::Show("More than 5 failed login attempts have been completed, try again later",
-							"Large number of requests", MessageBoxButtons::OK);
-
-						this->Close();
-					}
-					else
-					{
-						MessageBox::Show("Email or password is incorrect",
-							"Email or Password Empty ", MessageBoxButtons::OK);
-					}
+					HandleFailedAttempt(db_conn);
 				}
 			}
 			else
 			{
-				if (numbOfAttempts++ > 4)
-				{
-					MessageBox::Show("More than 5 failed login attempts have been completed, try again later",
-						"Large number of requests", MessageBoxButtons::OK);
-
-					this->Close();
-				}
-				else
-				{
-					MessageBox::Show("Email or password is incorrect",
-						"Email or Password Empty", MessageBoxButtons::OK);
-				}
+				HandleFailedAttempt(db_conn);
 			}
 		}
-		catch (Exception^ )
+		catch (Exception^)
 		{
-			MessageBox::Show("Database request execution error",
-				"Error DB", MessageBoxButtons::OK);
+			ShowMessageAndExit("Database request execution error", "Error DB");
 			Application::Exit();
 		}
 	}

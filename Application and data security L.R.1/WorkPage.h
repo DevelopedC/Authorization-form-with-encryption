@@ -21,7 +21,6 @@ namespace ApplicationanddatasecurityLR1 {
 		WorkPage(bool dVersionV) : demoVersionVariant(dVersionV)
 		{
 			InitializeComponent();
-
 			this->CenterToScreen();
 		}
 
@@ -202,35 +201,34 @@ namespace ApplicationanddatasecurityLR1 {
 	
 	private: System::Void çáåðåãòèToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
-		if (!demoVersionVariant)
-		{
-			if (!String::IsNullOrEmpty(FileName))
-			{
-				try
-				{
-					// Open file for recording
-					StreamWriter^ file_w = gcnew StreamWriter(FileName);
-					// Write text from the TextBox to a file
-					file_w->Write(textBox1->Text);
-
-					file_w->Close();
-
-					MessageBox::Show("File has been saved", "OK", MessageBoxButtons::OK);
-				}
-				catch (Exception^ ex)
-				{
-					MessageBox::Show("Error saving file", "Error", MessageBoxButtons::OK);
-				}
-			}
-			else
-			{
-				MessageBox::Show("The file to save was not found", "Error", MessageBoxButtons::OK);
-			}
-		}
-		else
+		if (demoVersionVariant)
 		{
 			MessageBox::Show("Please register to receive the full version", "Demo version", MessageBoxButtons::OK);
+			return;
 		}
+
+		if (String::IsNullOrEmpty(FileName))
+		{
+			MessageBox::Show("The file to save was not found", "Error", MessageBoxButtons::OK);
+			return;
+		}
+		
+		try
+		{
+			// Open file for recording
+			StreamWriter^ file_w = gcnew StreamWriter(FileName);
+			// Write text from the TextBox to a file
+			file_w->Write(textBox1->Text);
+
+			file_w->Close();
+
+			MessageBox::Show("File has been saved", "OK", MessageBoxButtons::OK);
+		}
+		catch (Exception^ ex)
+		{
+			MessageBox::Show("Error saving file", "Error", MessageBoxButtons::OK);
+		}
+			 
 	}
 };
 }

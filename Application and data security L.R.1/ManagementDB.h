@@ -1,5 +1,9 @@
 #pragma once
 #include <string>
+#include <chrono>
+#include <sstream>
+#include <iomanip>
+
 #include "User.h"
 
 using namespace System;
@@ -15,11 +19,23 @@ private:
 	String^ sqlSearchNumbEmails = "SELECT COUNT(*) FROM dbo.DataHash WHERE email = @email";
 
 	String^ sqlGetUserData = R"(SELECT dbo.Users.* FROM dbo.Users JOIN dbo.DataHash ON 
-					dbo.Users.id = dbo.DataHash.id	WHERE dbo.DataHash.email = @email)";  
+					dbo.Users.id = dbo.DataHash.id	WHERE dbo.DataHash.email = @email)";
 
 	String^ sqlSetNewUser = "INSERT INTO dbo.DataHash (email, hash, salt) VALUES(@email, @hash, @salt)";
 
 	String^ sqlSetDataUser = "INSERT INTO Users(name, phone, address) VALUES(@name, @phone, @address)";
+
+	String^ sqlBlockUser = R"(UPDATE Users
+								SET lockedAt = @lockedAt,
+								lockDuration = @lockDuration
+								FROM Users
+								INNER JOIN dbo.DataHash ON dbo.Users.id = dbo.DataHash.id
+								WHERE dbo.DataHash.email = @email)";
+
+	String^ sqlSelectBlockUser = R"(SELECT lockedAt, lockDuration
+                              FROM Users u
+                              INNER JOIN DataHash dh ON u.id = dh.id
+                              WHERE dh.email = @email)";
 
 	SqlConnection^ sqlConn;
 	String^ SaltDB;
@@ -31,14 +47,14 @@ public:
 	ManagementDB()
 	{   // create and open a database connection
 		sqlConn = gcnew SqlConnection(connString);
-		sqlConn->Open();	 
+		sqlConn->Open();
 	}
 
 	ManagementDB(String^ user_email) : ManagementDB()
 	{
 		email = user_email;
 	}
-	
+
 	bool CreateNewUser(UserData^ usrData, LoginData^ logData)
 	{
 		SqlCommand^ command = gcnew SqlCommand(sqlSearchNumbEmails, sqlConn);
@@ -51,11 +67,11 @@ public:
 		}
 
 		command = gcnew SqlCommand(sqlSetNewUser, sqlConn);
- 
+
 		command->Parameters->AddWithValue("@email", logData->email);
 		command->Parameters->AddWithValue("@hash", logData->hash);
 		command->Parameters->AddWithValue("@salt", logData->salt);
-	
+
 		// ñreate a new user
 		command->ExecuteNonQuery();
 
@@ -64,9 +80,9 @@ public:
 		command->Parameters->AddWithValue("@name", usrData->name);
 		command->Parameters->AddWithValue("@phone", usrData->phone);
 		command->Parameters->AddWithValue("@address", usrData->addres);
-		
+
 		// add user data
-		command->ExecuteNonQuery(); 
+		command->ExecuteNonQuery();
 
 		return 1;
 	}
@@ -128,12 +144,67 @@ public:
 		return usrData;
 	}
 
-	String^ getSalt(){
+	String^ getSalt() {
 		return SaltDB;
 	}
 
-	String^ getHash(){
+	String^ getHash() {
 		return HashDB;
+	}
+
+	void BlockUser()
+	{
+		SqlCommand^ command = gcnew SqlCommand(sqlBlockUser, sqlConn);
+
+		// Use DateTime for parameters
+		command->Parameters->AddWithValue("@lockedAt", DateTime::Now);
+		command->Parameters->AddWithValue("@lockDuration", 30);
+		command->Parameters->AddWithValue("@email", email);
+
+		command->ExecuteNonQuery();
+	}
+
+	bool SelectBlockUser()
+	{
+		SqlCommand^ command = gcnew SqlCommand(sqlSelectBlockUser, sqlConn);
+
+		command->Parameters->AddWithValue("@email", email);
+
+		SqlDataReader^ reader = command->ExecuteReader();
+
+		String^ lockedAt = nullptr;
+		int lockDuration = 0;
+
+		if (reader->Read())
+		{
+			// Checking for NULL for the date
+			if (!reader->IsDBNull(0)){
+				lockedAt = reader->GetDateTime(0).ToString();
+			}
+
+			// Checking for NULL for the duration of the lock
+			if (!reader->IsDBNull(1)){
+				lockDuration = reader->GetInt32(1);
+			}
+		}
+
+		reader->Close();
+
+		if (!String::IsNullOrEmpty(lockedAt))
+		{
+			DateTime lockedAtDateTime;
+			DateTime::TryParse(lockedAt, lockedAtDateTime);
+
+			TimeSpan duration = TimeSpan::FromMinutes(lockDuration);
+			DateTime unlockAtDateTime = lockedAtDateTime.Add(duration);
+
+			DateTime currentDateTime = DateTime::Parse(DateTime::Now.ToString());
+
+			// Comparison of the received time with the current one
+			return unlockAtDateTime > currentDateTime;
+		}
+
+		return false;
 	}
 
 	~ManagementDB()
