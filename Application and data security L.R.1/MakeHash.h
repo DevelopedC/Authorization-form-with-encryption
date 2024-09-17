@@ -27,7 +27,7 @@ public:
     // Function for salt generation
     static System::String^ generate_salt(size_t length)
     {
-        std::vector<unsigned char> salt(length);  // динамическое выделение памяти
+        std::vector<unsigned char> salt(length);
         if (RAND_bytes(salt.data(), length) != 1)
         {
             throw std::runtime_error("An error occurred when generating salt.");
